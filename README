@@ -1,0 +1,347 @@
+
+ #    #    ##    ######  ######   ####   #    #   #####
+ ##  ##   #  #       #   #       #    #  #    #     #
+ # ## #  #    #     #    #####   #       #    #     #
+ #    #  ######    #     #       #       #    #     #
+ #    #  #    #   #      #       #    #  #    #     #
+ #    #  #    #  ######  ######   ####    ####      #
+
+--------------------------------------------------------------
+| mazecut - a c++ program that automatically generates mazes |
+--------------------------------------------------------------
+
+Copyright 2010 Ben Selfridge
+
+mazecut is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+mazecut is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with mazecut.  If not, see <http://www.gnu.org/licenses/>.
+
+
+README last updated: August 10 2010
+
+
+
+---- Overview ----
+
+mazecut is a very simple program that generates mazes in a command
+line and GUI environment. It is written in C++.
+
+---- Getting it ----
+
+If you are reading this README it's likely you've already obtained the source
+distribution of mazecut, but just in case, you can check out the source with the
+command 
+
+svn co https://mazecut.svn.sourceforge.net/svnroot/mazecut/trunk mazecut
+
+This creates a folder called "mazecut" in the working directory and dumps the
+contents of the project's "trunk" folder into it. You can also download a
+tarball from https://sourceforge.net/projects/mazecut/ but this has a bunch of
+subversion turds that are not easy to remove without tarring each file
+individually. Just go with subversion.
+
+
+
+---- Contents ----
+
+src/
+	classes/
+		constants.cpp
+		constants.h
+		Maze2d.cpp
+		Maze2d.h
+		MazeNode.cpp
+		MazeNode.h
+	main/
+		mazecut.cpp
+		MazeCutter.cpp
+		MazeCutter.h
+	graphics/
+		mazegraphics.cpp
+		mazegraphics.h
+		testgraphics.cpp
+	resources/
+		Info.plist
+		maze.icns
+		version.plist
+icons/
+	maze.png
+Makefile
+mazecut.doxyfile
+README
+COPYING
+
+(plus all the subversion turds, of course)
+
+
+
+---- Requirements ----
+
+The following programs must be on your computer's PATH to build mazecut:
+
+GNU make ("make")
+GNU Compiler collection ("gcc" and "g++")
+
+Any self-respecting developer should have these tools anyway.
+
+Also, if you wish to build the GUI, you will need to install wxWidgets
+on your system.
+
+
+
+---- Summary of make targets ----
+
+The specifics of building mazecut can be found below, but here is a
+brief listing and explanation of the primary make targets:
+
+all: the default target. Compiles the command-line version of mazecut.
+
+cl: Compiles just the command-line program.
+
+gui: Compiles just the gui.
+
+guimac: Compiles just gui and packages it into an OS X app (double-clickable).
+
+install: Compiles the command-line version of mazecut and dumps it in
+the INSTALLDIR (Makefile variable) directory.
+
+installgui: Same as install, but with the GUI instead of command-line
+version of mazecut (the GUI is called MazeCutter).
+
+uninstall: Removes the command-line and GUI programs from the default
+install directory, if they are there.
+
+doc: Uses doxygen to generate documentation for mazecut. The details
+of how the docs are generated can be found in mazecut.doxyfile.
+
+tarsrc: Creates a tarball of the source code. As you add more source
+files you may need to update this target if you want the tarball to
+include everything.
+
+tarbin: Creates a tarball with just the two main executables, mazecut
+(command-line) and MazeCutter (gui).
+
+tarbincygwin: Same as tarbin, but gives the tarball a _cyg suffix to indicate
+that it requires cygwin1.dll in order to run.
+
+examples: Runs the mazecut program and generates several mazes of two
+different sizes using all the defined algorithms. This is a useful
+target to run to make sure you didn't break any of the core
+functionality of mazecut. The results appear in ./examples.
+
+
+
+---- Building with Eclipse ----
+
+I use the Eclipse IDE with the CDT plugin for C/C++ projects to develop
+mazecut. It's got a nice set of features, and it integrates cleanly with
+Makefiles. This section is devoted to getting you set up with mazecut in
+Eclipse. If you don't want to use Eclipse, that's cool too - skip to the
+"Building without Eclipse" section. Throughout, I'll assume you are using
+Helios, because it's got the best C/C++ support of any other release.
+
+If you already have the Eclipse (Helios) Java IDE installed but don't have the
+CDT C/C++ extension, you can install it as a plugin. The plugin's repository
+is
+
+http://download.eclipse.org/tools/cdt/releases/helios
+
+If you don't know how to install plugins, it's very simple, and you can
+certainly find out by using google in a matter of seconds.
+
+If you don't have any version of Eclipse installed, you can simplify this
+process by just downloading Eclipse with the CDT already up and running. You can
+get it from:
+
+http://www.eclipse.org/downloads/packages/eclipse-ide-cc-developers/heliosr
+
+Once you have the Eclipse C++ IDE installed, open up Eclipse and choose the
+"C/C++" perspective (upper right corner). If you don't see it there, click the
+"Open Perspective" button and choose it from the options displayed. Now on the
+toolbar, click the "New C/C++ Project" dropdown menu and select "Makefile
+Project with Existing Code." Under Existing Code Location, put the path to this
+folder. The path should end in "/mazecut" unless you renamed the folder. This
+should case the "Project Name" text field to display the name of the
+folder. Under "Languages" leave C and C++ checked and under "Toolchain for
+Indexer Settings" select whichever GCC applies to your system. I work on Linux,
+so I select "Linux GCC," but if you're on Windows you'd probably select "Cygwin
+GCC" or "MinGW GCC," whichever one you have installed on your system. Click
+"Finish," and that's it - mazecut should appear as a project in the Project
+Explorer view and it will automatically build itself, assuming you have "Build
+Automatically" checked under the "Project" dropdown menu.
+
+You can make your life easier with Eclipse by integrating it with various
+external tools and plugins. I recommend getting the eclox plugin to for Eclipse
+as well as gdb (the GNU debugger) and configuring Eclipse to use it to debug
+mazecut. In the Makefile, every call to the compiler contains the "-g" option,
+so the debugger will be able to recognize line numbers in the source code.
+
+
+
+---- Building without Eclipse ----
+
+Building mazecut is very simple and platform-independent. Navigate to
+the installation directory (where this README is located) with the
+command
+
+$ cd <path-to-installation>
+
+where <path-to-installation> is replaced with the path to the
+installation. Then run the command
+
+$ make
+
+You'll see a few files being compiled. Assuming everything goes
+correctly, the program will be dumped to
+<path-to-installation>/build/main/mazecut. You can run it from there.
+
+
+
+---- Building the GUI ----
+
+The GUI component of mazecut is under development. If you want to
+work on it, you'll need to install wxWidgets on your system, which
+can be found at
+
+http://www.wxwidgets.org/
+
+You'll need to install and configure that accordingly. The specifics
+may vary depending on your environment. If you can't get it to work
+you can ping me and I'll probably be able to get it set up for you.
+
+Once you've got wxWidgets you can build the GUI with the command
+
+$ make gui
+
+Or, if you're on OS X, type
+
+$ make guimac
+
+to package it correctly as an OS X app. There are a number of things that can go
+wrong here depending on your wxWidgets configuration. This README will be
+updated soon to reflect the optimal wxWidgets configuration for each system.
+
+
+
+---- Installing ----
+
+If you want to be able to run mazecut from anywhere, you just need to
+install it somewhere on your path. The default installation location
+is $(HOME)/bin - this is where I keep all the little utilities I've
+set up for myself, and it's on my path, so it's a sensible place to
+put stuff that's not system-critical (like /usr/bin, for example). I
+would recommend you not install it to some important root directory -
+anything under /usr/bin, /usr/local/bin, or anything like that.
+
+To install, simply type "make install." This will compile anything
+that needs to be compiled, then dump the "mazecut" program into the
+INSTALLDIR directory.
+
+To change the installation directory, open up the Makefile and find
+the INSTALLDIR variable, and just set that to whereever you want to
+put mazecut. Alternatively, you can overwrite the INSTALLDIR
+variable on the command-line, i.e.:
+
+$ make install INSTALLDIR=/usr/bin
+
+To install the GUI, everything is exactly the same as above except
+you'll use the target "installgui" instead of "install".
+
+To uninstall, just type "make uninstall." Again, the INSTALLDIR
+variable has to be set to whatever it was when you invoked the
+install target. This will remove (without prompting) the mazecut
+and MazeCutter executables from the install directory.
+
+
+
+---- Running ----
+
+cd to build/, then run the mazecut command:
+
+$ ./mazecut
+Using recursive backtracking...
+   _ _ _ _ _ _ _ _ _
+|  _ _  |  _ _   _  |
+|   |_  | |   |_ _| |
+| |_  | |_| |_ _  | |
+|_ _| |_ _ _|   | | |
+|   | |_ _    | |_  |
+| |_ _|   |_| |_|  _|
+|  _ _ _|_  |_   _| |
+| |  _  | | | |_ _ _|
+|_ _| | | | |_ _ _  |
+|_ _ _ _ _|_ _ _ _  |
+$
+
+With no switches specified, mazecut defaults to a 10x10 maze and uses
+recursive backtracking to generate the maze. You can change this by
+providing various command line arguments. To set the row and column
+numbers, simply type those numbers (in that order) after ./mazecut:
+
+$ ./mazecut 3 6
+Using recursive backtracking...
+   _ _ _ _ _
+|  _    |  _|
+| |  _|_|_  |
+|_|_ _ _ _  |
+$
+
+You can find out about other options by invoking ./mazecut -h. To
+enter in a bunch of options at once, you don't need to type each one
+individually; you can stick them all together, like ./mazecut -qD.
+
+
+
+---- Generating documentation ----
+
+mazecut uses the Doxygen documentation system to generate
+documentation. It is available at
+
+http://www.stack.nl/~dimitri/doxygen/
+
+To use doxygen in the command line to generate documentation for
+mazecut, first make sure that the "doxygen" command is on your $PATH.
+This can sometimes be a little tricky; at least on OS X, the binary
+distribution for Doxygen is just an app; the actual "doxygen" command
+is hidden (use the terminal to cd _inside_ the Doxygen.app as if it
+were a directory (in fact it is) - the doxygen command-line utility
+should be somewhere in here).
+
+Once you've got it on your path, cd to the mazecut root directory and
+enter the following command:
+
+$ make doc
+
+This will automatically generate the documentation and place it in
+./doc/html. Open up index.html and you're set.
+
+I use Eclipse for everything on this project, whose C/C++ mode
+seamlessly integrates Makefile projects. On Eclipse there is a nice
+plugin called eclox which offers a doxyfile editor as well as a
+"create documentation" button, which essentially does exactly what
+"make doc" is configured to do. You can find out more about eclox at
+
+http://home.gna.org/eclox/
+
+
+
+---- Developing ----
+
+Currently I'm the only one working on this project. Contact me if you
+want to lend a hand or give me some suggestions. I'll gladly grant you
+repository access.
+
+
+
+---- Contact ----
+
+benselfridge@gmail.com
